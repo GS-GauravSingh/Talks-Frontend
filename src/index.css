@@ -7,7 +7,19 @@
 @tailwind utilities;
 
 @layer base {
-    body{
-        @apply font-inter text-base font-normal bg-white text-gray
+    body {
+        @apply font-inter text-base font-normal bg-white text-gray;
+    }
+}
+
+@layer utilities {
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
     }
 }
