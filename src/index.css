@@ -1,0 +1,13 @@
+/* Google Font - Inter */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* Tailwind CSS classes */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body{
+        @apply font-inter text-base font-normal bg-white text-gray
+    }
+}
