@@ -11,7 +11,7 @@ import {
     Smiley,
     VideoCamera,
 } from "@phosphor-icons/react";
-import { TextMessage } from "../components";
+import { MessageSeparator, TextMessage, TypingIndicator } from "../components";
 
 function MessagesInbox() {
     return (
@@ -59,8 +59,11 @@ function MessagesInbox() {
 
             {/* Main - Messages or Chats */}
             <div
-                className={`flex-grow px-2 py-2 overflow-scroll no-scrollbar`}
+                className={`flex-grow px-2 py-2 overflow-scroll no-scrollbar space-y-6`}
             >
+
+                <MessageSeparator timestamp="Today" />
+
                 <TextMessage
                     type="incoming"
                     author="Alice Wanderlust"
@@ -97,6 +100,8 @@ function MessagesInbox() {
                     content="Thanks! I’ll definitely check it out. Link: https://phosphoricons.com/."
                     timestamp="2:02 pm"
                 />
+
+                <TypingIndicator />
             </div>
 
             {/* Footer - Send Message and other inputs */}

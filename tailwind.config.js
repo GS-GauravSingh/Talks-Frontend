@@ -21,6 +21,17 @@ export default {
         "smokyBlack": "#100C08",
         "darkCyan": "#008B8B",
       },
+
+      keyframes: {
+        typingIndicatorAnimationKeyframes: {
+          "0%, 70%": {transform: "translateY(0)"},
+          "35%": {transform: "translateY(-4px)"},
+        },
+      },
+
+      animation: {
+        "typingIndicatorAnimation": "typingIndicatorAnimationKeyframes 1s linear infinite",
+      },
     },
   },
   plugins: [],
