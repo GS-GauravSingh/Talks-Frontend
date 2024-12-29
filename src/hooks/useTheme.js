@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useLocalStorage from "./useLocalStorage";
 
 function useTheme() {
-    const [theme, setTheme] = useLocalStorage("theme", "light");
+    const [theme, setTheme] = useLocalStorage("talksTheme", "light");
 
     useEffect(() => {
         const body = document.body;
