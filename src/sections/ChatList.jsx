@@ -177,7 +177,8 @@ function ChatList() {
                         type="text"
                         name=""
                         id=""
-                        className={`bg-transparent w-full h-10 rounded-full outline-none text-sm pl-4 pr-11 border border-transparent group-focus-within:border-darkCyan tracking-wide absolute z-10`}
+                        placeholder="Search"
+                        className={`bg-transparent w-full h-10 rounded-full outline-none text-xs pl-4 pr-11 border border-transparent group-focus-within:border-darkCyan tracking-wide absolute z-10`}
                     />
                     <span className="absolute top-1/2 -translate-y-1/2 right-4 group-focus-within:text-darkCyan z-0">
                         <MagnifyingGlass size={24} weight="regular" />

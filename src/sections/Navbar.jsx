@@ -3,6 +3,7 @@ import commonStyles from "../commonStyles";
 import { Chat, Chats, User } from "@phosphor-icons/react";
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 import { ThemeSwitcher } from "../components";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
     const [active, setActive] = useState(0);
@@ -10,13 +11,17 @@ function Navbar() {
         {
             icon: <Chat size={20} weight="regular" />,
             title: "DMs",
+            route: "/dashboard"
         },
 
         {
             icon: <User size={20} weight="regular" />,
             title: "Profile",
+            route: "/dashboard/updateprofile"
         },
     ];
+
+    const navigate = useNavigate();
 
     return (
         <div
@@ -36,6 +41,7 @@ function Navbar() {
                         onClick={(event) => {
                             event.preventDefault();
                             setActive(index);
+                            navigate(obj.route);
                         }}
                     >
                         <span

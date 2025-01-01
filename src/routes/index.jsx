@@ -5,7 +5,7 @@ import {
     Navigate,
     RouterProvider,
 } from "react-router-dom";
-import { ChatList, MessagesInbox } from "../sections";
+import { ChatList, MessagesInbox, UpdateProfile } from "../sections";
 import Signup from "../pages/auth/Signup";
 import Signin from "../pages/auth/Signin";
 import Verification from "../pages/auth/Verification";
@@ -37,6 +37,11 @@ function index() {
                             <MessagesInbox />
                         </>
                     ),
+                },
+
+                {
+                    path: "updateprofile",
+                    element: <UpdateProfile />
                 },
             ],
         },

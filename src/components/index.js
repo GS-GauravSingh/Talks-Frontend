@@ -2,4 +2,5 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import TextMessage from "./messages/TextMessage";
 import MessageSeparator from "./MessageSeparator";
 import TypingIndicator from "./TypingIndicator";
-export { ThemeSwitcher, TextMessage, MessageSeparator, TypingIndicator };
+import EmojiPicker from "./EmojiPicker";
+export { ThemeSwitcher, TextMessage, MessageSeparator, TypingIndicator, EmojiPicker };
