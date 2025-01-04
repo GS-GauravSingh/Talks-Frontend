@@ -2,10 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { Smiley } from "@phosphor-icons/react";
-import useTheme from "../hooks/useTheme";
 
 function EmojiPicker() {
-    const theme = JSON.parse(localStorage.getItem("talksTheme") || "light");
+    const theme = JSON.parse(localStorage.getItem("talksTheme"));
     const triggerRef = useRef(null);
     const pickerRef = useRef(null);
     const [showPicker, setShowPicker] = useState(false);
@@ -40,7 +39,7 @@ function EmojiPicker() {
     });
 
     // Function to handle what to do when user click on any emoji.
-    function handleOnEmojiSelect(){}
+    function handleOnEmojiSelect() {}
 
     return (
         <div className="flex items-center relative">
@@ -56,7 +55,14 @@ function EmojiPicker() {
                 ref={pickerRef}
                 className="max-w-fit absolute bottom-[35px] right-0 z-50"
             >
-                {showPicker && <Picker data={data} theme={theme} onEmojiSelect={handleOnEmojiSelect} autoFocus={true} />}
+                {showPicker && (
+                    <Picker
+                        data={data}
+                        theme={theme}
+                        onEmojiSelect={handleOnEmojiSelect}
+                        autoFocus={true}
+                    />
+                )}
             </div>
         </div>
     );

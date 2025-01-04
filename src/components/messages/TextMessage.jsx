@@ -2,7 +2,6 @@ import { Check, Checks } from "@phosphor-icons/react";
 import React from "react";
 import commonStyles from "../../commonStyles";
 import updateTextMessageAndExtractLinks from "../../utils/updateTextMessageAndExtractLinks";
-import Microlink from "@microlink/react"
 
 function TextMessage({ type, author, content, timestamp, read_receipt }) {
     const { updatedMessage, urls } = updateTextMessageAndExtractLinks(
@@ -26,9 +25,6 @@ function TextMessage({ type, author, content, timestamp, read_receipt }) {
                 } px-4 py-4 rounded-lg flex flex-col justify-center cursor-default`}
             >
                 <p dangerouslySetInnerHTML={{ __html: updatedMessage }}></p>
-                {
-                    urls.length > 0 && <Microlink style={{width: "100%", marginTop: "0.5rem", borderRadius: "0.5rem"}} url={urls[0]} />
-                }
             </div>
 
             <p
