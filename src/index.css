@@ -1,0 +1,58 @@
+/* Google Font - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+/* Import Tailwind CSS */
+@import "tailwindcss";
+
+/* TO eanble Dark mode in Tailwind CSS. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* @theme directive is used to define CSS variables. Like in vanilla CSS, we use `:root` to define CSS Variables, but `@theme` is not just use to define CSS variable, these CSS variable can be used as tailwind utility classes. */
+@theme {
+
+    /* Font Family */
+    /* can be used as a tailwing utility class like this "font-inter". */
+    --font-inter: "Inter", serif;
+
+    /* Colors */
+    --color-highlight: #3AB09E;
+    --color-bodyText: #64748B;
+    --color-borderColor: #E2E8F0;
+    --color-heading: #2A3439;
+    --color-link: #4169E1;
+    --color-lessFocusText: #7D7D7D;
+    --color-background: #F8F9FA;
+}
+
+/* Dark Mode - Standard CSS (Not a tailwind css feature) */
+html.dark {
+    --color-background: #121212;
+    --color-text: #F8F9FA;
+    --color-borderColor: #2E3A47;
+    --color-heading: #F5F5F5;
+    --color-link: #AFDBF5;
+}
+
+/* @layer base is used to define base style(s) for your tailwind css project. */
+@layer base {
+    body {
+        @apply relative z-[1] font-inter text-base font-normal text-bodyText bg-background
+    }
+}
+
+/* @layer utilities is used to define custome utility classes. */
+@layer utilities {
+
+    .no-scrollbar::-webkit-scrollbar {
+        /* Chrome, Safari and Opera */
+        display: none;
+    }
+
+    .no-scrollbar {
+        /* IE and Edge */
+        -ms-overflow-style: none;
+
+        /* Firefox */
+        scrollbar-width: none;
+    }
+}
