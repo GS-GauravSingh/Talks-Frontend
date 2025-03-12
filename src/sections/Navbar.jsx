@@ -16,7 +16,7 @@ function Navbar() {
 		{
 			title: "Profile",
 			icon: <FaRegUserCircle />,
-			path: "/user/profile",
+			path: "/dashboard/update-profile",
 		},
 	];
 

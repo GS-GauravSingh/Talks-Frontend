@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import { Dashboard, Signin, Signup, Verify } from "../pages";
-import { ChatList, Messages } from "../sections";
+import { ChatList, Messages, UpdateProfile } from "../sections";
 
 function index() {
 	// Initializing the application theme once on component mount.
@@ -30,15 +30,15 @@ function index() {
 						</>
 					}
 				/>
+
+				<Route path="update-profile" element={<UpdateProfile />} />
+				<Route path="change-password" element={<UpdateProfile />} />
 			</Route>
 
 			{/* Authentication Routes */}
 			<Route path="/auth/signup" element={<Signup />} />
 			<Route path="/auth/verify" element={<Verify />} />
-			<Route path="/auth/login" element={<Signin />} />
-
-			{/* User Routes */}
-			<Route path="/user/profile" element={<Dashboard />} />
+			<Route path="/auth/signin" element={<Signin />} />
 		</Routes>
 	);
 }

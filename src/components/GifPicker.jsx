@@ -63,7 +63,7 @@ function GifPicker({ triggerRef, setShowGifPicker }) {
 				</span>
 			</div>
 
-			<div className="h-48 overflow-auto no-scrollbar" ref={gridRef}>
+			<div className="h-48 overflow-auto no-scrollbar rounded-md" ref={gridRef}>
 				<Grid
 					width={width}
 					columns={8}
