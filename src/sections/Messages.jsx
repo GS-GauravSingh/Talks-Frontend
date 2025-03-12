@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import user from "../assets/userImages/user_03.png";
 import { FaPaperPlane } from "react-icons/fa";
 import { MdGif } from "react-icons/md";
 import { GrEmoji } from "react-icons/gr";
 import { Gif, Smiley } from "@phosphor-icons/react";
-import { TextMessage } from "../components";
+import { Emojipicker, GifPicker, TextMessage } from "../components";
 import Profile from "./Profile";
 
 function Messages() {
 	const [showUserProfile, setShowUserProfile] = useState(false);
+	const [showGifPicker, setShowGifPicker] = useState(false);
+	const gifTriggerRef = useRef(null);
 	function toggleShowProfile() {
 		setShowUserProfile((prev) => !prev);
 	}
+	function toggleShowGifPicker() {
+		setShowGifPicker((prev) => !prev);
+	}
+
 	return (
 		<>
 			<div
@@ -71,29 +77,40 @@ function Messages() {
 				</div>
 
 				{/* Buttons */}
-				<div className="flex flex-row items-center gap-4 w-full px-4">
-					<div className="flex items-center w-full relative">
-						<input
-							type="text"
-							className="w-full h-10 bg-borderColor rounded-md outline-none border border-highlight px-4 text-xs tracking-wide text-heading"
-							placeholder="Type your message here..."
-						/>
+				<div className="w-full flex flex-col gap-2 px-4">
+					<div className="flex flex-row items-center gap-4 w-full">
+						<div className="flex items-center w-full relative">
+							<input
+								type="text"
+								className="w-full h-10 bg-borderColor rounded-md outline-none border border-highlight pl-4 pr-24 text-xs tracking-wide text-heading"
+								placeholder="Type your message here..."
+							/>
 
-						<div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-row items-center gap-2">
-							<span className="hover:text-highlight cursor-pointer">
-								<MdGif className="text-[2.5rem]" />
-							</span>
-							<span className="hover:text-highlight cursor-pointer">
-								{/* <GrEmoji className="text-xl font-bold" /> */}
-								<Smiley size={20} weight="bold" />
-							</span>
+							<div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-row items-center gap-4 h-full">
+								<span
+									className={`hover:text-highlight cursor-pointer ${showGifPicker && "text-highlight"}`}
+									onClick={toggleShowGifPicker}
+									ref={gifTriggerRef}
+								>
+									<Gif size={20} weight="bold" />
+								</span>
+
+								<Emojipicker />
+							</div>
 						</div>
+
+						{/* Send Message Button */}
+						<button className="h-10 px-4 flex items-center border border-highlight rounded-md text-white text-xl bg-highlight cursor-pointer">
+							<FaPaperPlane />
+						</button>
 					</div>
 
-					{/* Send Message Button */}
-					<button className="h-10 px-4 flex items-center border border-highlight rounded-md text-white text-xl bg-highlight cursor-pointer">
-						<FaPaperPlane />
-					</button>
+					{showGifPicker && (
+						<GifPicker
+							triggerRef={gifTriggerRef}
+							setShowGifPicker={setShowGifPicker}
+						/>
+					)}
 				</div>
 			</div>
 
