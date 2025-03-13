@@ -69,7 +69,7 @@ function Verify() {
 	}
 
 	return (
-		<div className="h-screen w-full flex items-center justify-center px-4 py-4">
+		<div className="min-h-screen w-full flex items-center justify-center px-4 py-4">
 			<div className="w-full max-w-[500px] border border-borderColor rounded-md px-4 py-4 space-y-6">
 				<div className="flex flex-col mb-14">
 					<h3 className="text-heading text-2xl">Talks</h3>
@@ -112,6 +112,7 @@ function Verify() {
 									type="text"
 									value={value}
 									key={index}
+									required
 									className="h-10 border border-borderColor rounded-md bg-borderColor text-heading text-xs text-center outline-none"
 									onChange={(event) =>
 										handleOnChange(event, index)
