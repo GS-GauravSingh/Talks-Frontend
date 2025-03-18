@@ -20,8 +20,6 @@ function UpdateProfile() {
 		window.location.pathname === "/dashboard/update-profile" ? 0 : 1
 	);
 
-    useEffect(() => { console.log(window.location.pathname);
-    })
 	const menu = [
 		{
 			title: "Update Profile",

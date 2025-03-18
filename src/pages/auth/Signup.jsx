@@ -1,10 +1,13 @@
 import { Envelope, LockSimple, User } from "@phosphor-icons/react";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // `z` is the core object from Zod that helps define and validate schemas.
 import { zodResolver } from "@hookform/resolvers/zod"; // `zodResolver` connects Zod with React Hook Form, so React Hook Form can use the Zod schema for validation.
+import AuthImagePattern from "../../components/AuthImagePattern";
+import toast from "react-hot-toast";
+import { TbMessages } from "react-icons/tb";
 
 function Signup() {
 	// Creating Schema
@@ -34,7 +37,9 @@ function Signup() {
 				.string("Password is required!")
 				.min(6, "Password must be at least 6 characters."),
 
-			confirmPassword: z.string().min(6, "Confirm Password must be at least 6 characters."),
+			confirmPassword: z
+				.string()
+				.min(6, "Confirm Password must be at least 6 characters."),
 		})
 
 		// zod allows us to write custom validation logic via `.refine()`.
@@ -62,193 +67,217 @@ function Signup() {
 		console.log(data);
 	}
 
+	// Form validation Error - Displaying as Toast Errors.
+	useEffect(() => {
+		if (errors.firstname) {
+			toast.error(errors.firstname.message);
+		}
+		if (errors.lastname) {
+			toast.error(errors.lastname.message);
+		}
+		if (errors.email) {
+			toast.error(errors.email.message);
+		}
+		if (errors.password) {
+			toast.error(errors.password.message);
+		}
+		if (errors.confirmPassword) {
+			toast.error(errors.confirmPassword.message);
+		}
+	}, [errors]);
+
 	return (
-		<div className="min-h-screen w-full flex items-center justify-center px-4 py-4">
-			<div className="w-full max-w-[500px] border border-borderColor rounded-md px-4 py-4 space-y-6">
-				<div className="flex flex-col mb-14">
-					<h3 className="text-heading text-2xl">Talks</h3>
-					<p className="text-xs whitespace-nowrap">
-						Real-time, Real Conversations.
-					</p>
+		<div className="min-h-screen flex flex-col">
+			{/* Header */}
+			<div className=" p-4 sticky top-0 z-50 backdrop-blur-md">
+				<div className="flex items-center gap-4">
+					<span className="text-4xl border p-2 rounded-md border-borderColor hover:text-black hover:bg-highlight hover:border-highlight transition-all duration-75 ease-in">
+						<TbMessages />
+					</span>
+
+					<div className="flex flex-col">
+						<h3 className="text-heading font-semibold text-xl">
+							Talks
+						</h3>
+						<p className="text-xs whitespace-nowrap">
+							Real-time, Real Conversations.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<div className="flex-grow grid grid-rows-1 grid-cols-1 lg:grid-cols-2">
+				{/* Left Side */}
+				<div className="p-4 space-y-6 flex items-center justify-center">
+					<div className="w-full max-w-lg space-y-8">
+						<div className="flex flex-col items-center">
+							<h3 className="text-heading text-2xl">
+								<User size={40} weight="bold" />
+							</h3>
+							<p className="text-heading text-xl font-semibold mt-4">
+								Create Account
+							</p>
+							<p className="text-xs text-center">
+								<span className="">Create an account, </span>
+								<span className="whitespace-nowrap">
+									spark a conversation!
+								</span>
+							</p>
+						</div>
+
+						{/* Sign-Up Form */}
+						<form
+							onSubmit={handleSubmit(onSubmit)}
+							className="flex flex-col justify-center gap-4"
+						>
+							{/* First and Last Name */}
+							<div className="flex flex-col gap-4 sm:flex-row">
+								<div className="w-full flex flex-col gap-1 justify-center">
+									<label
+										htmlFor="userFirstName"
+										className="text-heading text-sm"
+									>
+										Firstname
+									</label>
+									<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
+										<input
+											type="text"
+											id="userFirstName"
+											placeholder="John"
+											className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+											{...register("firstname")}
+										/>
+										<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
+											<User size={20} weight="regular" />
+										</span>
+									</div>
+								</div>
+
+								<div className="w-full flex flex-col gap-1 justify-center">
+									<label
+										htmlFor="userLastName"
+										className="text-heading text-sm"
+									>
+										Lastname
+									</label>
+									<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
+										<input
+											type="text"
+											id="userLastName"
+											placeholder="Doe"
+											className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+											{...register("lastname")}
+										/>
+										<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
+											<User size={20} weight="regular" />
+										</span>
+									</div>
+								</div>
+							</div>
+
+							{/* Email */}
+							<div className="w-full flex flex-col gap-1 justify-center">
+								<label
+									htmlFor="userEmail"
+									className="text-heading text-sm"
+								>
+									Email
+								</label>
+								<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
+									<input
+										type="text"
+										id="userEmail"
+										placeholder="johndoe@example.com"
+										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										{...register("email")}
+									/>
+									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
+										<EnvelopeSimple
+											size={20}
+											weight="regular"
+										/>
+									</span>
+								</div>
+							</div>
+
+							{/* Password */}
+							<div className="w-full flex flex-col gap-1 justify-center">
+								<label
+									htmlFor="userPassword"
+									className="text-heading text-sm"
+								>
+									Password
+								</label>
+								<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
+									<input
+										type="text"
+										id="userPassword"
+										placeholder="Create a strong Password (at least 6 Characters)"
+										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										{...register("password")}
+									/>
+									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
+										<LockSimple
+											size={20}
+											weight="regular"
+										/>
+									</span>
+								</div>
+							</div>
+
+							{/* Confirm Password */}
+							<div className="w-full flex flex-col gap-1 justify-center">
+								<label
+									htmlFor="userConfirmPassword"
+									className="text-heading text-sm"
+								>
+									Confirm Password
+								</label>
+								<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
+									<input
+										type="text"
+										id="userConfirmPassword"
+										placeholder="Type your password again"
+										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										{...register("confirmPassword")}
+									/>
+									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
+										<LockSimple
+											size={20}
+											weight="regular"
+										/>
+									</span>
+								</div>
+							</div>
+
+							{/* Sign In - Already have any account? */}
+							<p className="text-xs text-center">
+								Already have any account?{" "}
+								<Link
+									to="/auth/signin"
+									className="text-highlight font-medium"
+								>
+									Sign In
+								</Link>
+							</p>
+
+							{/* Submit Button */}
+							<button
+								type="submit"
+								className="bg-highlight text-black h-10 w-full rounded-md text-sm cursor-pointer font-semibold active:scale-95 transition-all duration-75 ease-in"
+							>
+								Register
+							</button>
+						</form>
+					</div>
 				</div>
 
-				<div className="flex flex-col items-center">
-					<h3 className="text-heading text-2xl">
-						<User size={40} weight="regular" />
-					</h3>
-					<p className="text-xs text-center">
-						<span className="">Create an account, </span>
-						<span className="whitespace-nowrap">
-							spark a conversation!
-						</span>
-					</p>
-				</div>
-
-				{/* Sign-Up Form */}
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="flex flex-col justify-center gap-4"
-				>
-					{/* First name */}
-					<div className="w-full flex flex-col gap-1 justify-center">
-						<label
-							htmlFor="userFirstName"
-							className="text-heading text-sm"
-						>
-							Firstname
-						</label>
-						<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
-							<input
-								type="text"
-								id="userFirstName"
-								placeholder="Enter your First Name"
-								className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
-								{...register("firstname")}
-							/>
-							<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
-								<User size={20} weight="regular" />
-							</span>
-						</div>
-
-						{/* Display error message if 'firstname' has an error */}
-						{errors.firstname && (
-							<p className="text-xs text-red-700">
-								{errors.firstname.message}
-							</p>
-						)}
-					</div>
-
-					{/* Last name (Optional) */}
-					<div className="w-full flex flex-col gap-1 justify-center">
-						<label
-							htmlFor="userLastName"
-							className="text-heading text-sm"
-						>
-							Lastname
-						</label>
-						<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
-							<input
-								type="text"
-								id="userLastName"
-								placeholder="Enter your Last Name (Optional)"
-								className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
-								{...register("lastname")}
-							/>
-							<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
-								<User size={20} weight="regular" />
-							</span>
-						</div>
-						{/* Display error message if 'lastname' has an error */}
-						{errors.lastname && (
-							<p className="text-xs text-red-700">
-								{errors.lastname.message}
-							</p>
-						)}
-					</div>
-
-					{/* Email */}
-					<div className="w-full flex flex-col gap-1 justify-center">
-						<label
-							htmlFor="userEmail"
-							className="text-heading text-sm"
-						>
-							Email
-						</label>
-						<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
-							<input
-								type="text"
-								id="userEmail"
-								placeholder="Enter your Email Address"
-								className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
-								{...register("email")}
-							/>
-							<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
-								<EnvelopeSimple size={20} weight="regular" />
-							</span>
-						</div>
-						{/* Display error message if 'email' has an error */}
-						{errors.email && (
-							<p className="text-xs text-red-700">
-								{errors.email.message}
-							</p>
-						)}
-					</div>
-
-					{/* Password */}
-					<div className="w-full flex flex-col gap-1 justify-center">
-						<label
-							htmlFor="userPassword"
-							className="text-heading text-sm"
-						>
-							Password
-						</label>
-						<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
-							<input
-								type="text"
-								id="userPassword"
-								placeholder="Create a New Password (6+ Characters)"
-								className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
-								{...register("password")}
-							/>
-							<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
-								<LockSimple size={20} weight="regular" />
-							</span>
-						</div>
-						{/* Display error message if 'password' has an error */}
-						{errors.password && (
-							<p className="text-xs text-red-700">
-								{errors.password.message}
-							</p>
-						)}
-					</div>
-
-					{/* Confirm Password */}
-					<div className="w-full flex flex-col gap-1 justify-center">
-						<label
-							htmlFor="userConfirmPassword"
-							className="text-heading text-sm"
-						>
-							Confirm Password
-						</label>
-						<div className="w-full relative border border-borderColor rounded-md bg-borderColor text-heading h-10">
-							<input
-								type="text"
-								id="userConfirmPassword"
-								placeholder="Re-type the newly created password"
-								className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
-								{...register("confirmPassword")}
-							/>
-							<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
-								<LockSimple size={20} weight="regular" />
-							</span>
-						</div>
-						{/* Display error message if 'password' has an error */}
-						{errors.confirmPassword && (
-							<p className="text-xs text-red-700">
-								{errors.confirmPassword.message}
-							</p>
-						)}
-					</div>
-
-					{/* Sign In - Already have any account? */}
-					<p className="text-xs text-center">
-						Already have any account?{" "}
-						<Link
-							to="/auth/signin"
-							className="text-highlight font-medium"
-						>
-							Sign In
-						</Link>
-					</p>
-
-					{/* Submit Button */}
-					<button
-						type="submit"
-						className="bg-highlight text-white h-10 w-full rounded-md text-sm cursor-pointer font-semibold"
-					>
-						Register
-					</button>
-				</form>
+				{/* Right Side */}
+				<AuthImagePattern
+					title="Join our community"
+					subtitle="Join now to connect with friends, share your favorite moments, and stay close to the people who matter most."
+				/>
 			</div>
 		</div>
 	);

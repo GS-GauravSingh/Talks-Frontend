@@ -22,7 +22,7 @@ function CountrySelect() {
 					<option
 						value=""
 						className={`bg-borderColor`}
-						selected
+						defaultValue
 						disabled
 					>
 						Select Country

@@ -39,6 +39,7 @@ function index() {
 			<Route path="/auth/signup" element={<Signup />} />
 			<Route path="/auth/verify" element={<Verify />} />
 			<Route path="/auth/signin" element={<Signin />} />
+
 		</Routes>
 	);
 }

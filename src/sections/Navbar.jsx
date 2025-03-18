@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LuMessageSquare } from "react-icons/lu";
 import { TbMessages } from "react-icons/tb";
 import { IoIosLogOut } from "react-icons/io";
@@ -20,6 +20,21 @@ function Navbar() {
 		},
 	];
 
+	// Initializing the active navigation menu on component mount.
+	const [active, setActive] = useState(() => {
+		let activeIdx;
+		for (let index = 0; index < menu.length; index++) {
+			const element = menu[index];
+
+			if (element.path === window.location.pathname) {
+				activeIdx = index;
+				break;
+			}
+		}
+
+		return activeIdx;
+	});
+
 	return (
 		<div className="h-full w-[4.5rem] min-w-[4.5rem] flex flex-col items-center gap-4 px-2 py-2">
 			<div className="border-b border-borderColor py-[1.05rem] w-full flex justify-center">
@@ -31,24 +46,24 @@ function Navbar() {
 			{/* Navigation Menu */}
 			<div className="flex-grow flex flex-col items-center gap-4">
 				{menu.map(({ title, icon, path }, index) => {
-					const isActive = window.location.pathname === path;
 					return (
 						<NavLink
 							key={index}
 							to={path}
 							className="text-center space-y-1 cursor-pointer"
+							onClick={() => setActive(index)}
 						>
 							<div
-								className={`${isActive ? "bg-highlight border-highlight" : ""} flex justify-center border border-borderColor rounded-md px-2 py-2 text-base`}
+								className={`${active === index ? "bg-highlight border-highlight" : ""} flex justify-center border border-borderColor rounded-md px-2 py-2 text-base`}
 							>
 								<div
-									className={`${isActive ? "text-white" : ""} `}
+									className={`${active === index ? "text-white" : ""} `}
 								>
 									{icon}
 								</div>
 							</div>
 							<p
-								className={`${isActive ? "text-highlight font-semibold" : ""} text-xs`}
+								className={`${active === index ? "text-highlight font-semibold" : ""} text-xs`}
 							>
 								{title}
 							</p>
