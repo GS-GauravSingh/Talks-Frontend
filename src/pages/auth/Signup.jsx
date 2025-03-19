@@ -1,15 +1,21 @@
 import { Envelope, LockSimple, User } from "@phosphor-icons/react";
 import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import React, { useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { z } from "zod"; // `z` is the core object from Zod that helps define and validate schemas.
 import { zodResolver } from "@hookform/resolvers/zod"; // `zodResolver` connects Zod with React Hook Form, so React Hook Form can use the Zod schema for validation.
 import AuthImagePattern from "../../components/AuthImagePattern";
 import toast from "react-hot-toast";
 import { TbMessages } from "react-icons/tb";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../utils/auth.util";
 
 function Signup() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { authLoading } = useSelector((state) => state.auth);
+
 	// Creating Schema
 	// Zod is a schema based validation library.
 	// Instead of defining validation rules in multiple places (register for each input), you define a single validation schema using Zod.
@@ -63,8 +69,17 @@ function Signup() {
 			) /* Attaching Zod Validation, so that react hook form uses zod schema for validations. */,
 	});
 
-	function onSubmit(data) {
-		console.log(data);
+	// function to handle user registration.
+	async function onSubmit(data) {
+		try {
+			const response = await dispatch(registerUser(data));
+			if (response?.status === 200) {
+				navigate("/auth/verify");
+				reset(); // reset the form fileds.
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	// Form validation Error - Displaying as Toast Errors.
@@ -146,6 +161,7 @@ function Signup() {
 											id="userFirstName"
 											placeholder="John"
 											className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+											disabled={authLoading}
 											{...register("firstname")}
 										/>
 										<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
@@ -167,6 +183,7 @@ function Signup() {
 											id="userLastName"
 											placeholder="Doe"
 											className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+											disabled={authLoading}
 											{...register("lastname")}
 										/>
 										<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
@@ -190,6 +207,7 @@ function Signup() {
 										id="userEmail"
 										placeholder="johndoe@example.com"
 										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										disabled={authLoading}
 										{...register("email")}
 									/>
 									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
@@ -215,6 +233,7 @@ function Signup() {
 										id="userPassword"
 										placeholder="Create a strong Password (at least 6 Characters)"
 										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										disabled={authLoading}
 										{...register("password")}
 									/>
 									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
@@ -240,6 +259,7 @@ function Signup() {
 										id="userConfirmPassword"
 										placeholder="Type your password again"
 										className="absolute left-0 z-50 w-full rounded-md h-full pl-4 pr-14 outline-none text-xs tracking-wider"
+										disabled={authLoading}
 										{...register("confirmPassword")}
 									/>
 									<span className="flex items-center absolute right-4 top-1/2 -translate-y-1/2 z-0">
@@ -255,8 +275,8 @@ function Signup() {
 							<p className="text-xs text-center">
 								Already have any account?{" "}
 								<Link
-									to="/auth/signin"
-									className="text-highlight font-medium"
+									to={`${authLoading ? "" : "/auth/signin"}`}
+									className={`text-highlight font-medium ${authLoading ? "cursor-no-drop" : ""}`}
 								>
 									Sign In
 								</Link>
@@ -267,7 +287,7 @@ function Signup() {
 								type="submit"
 								className="bg-highlight text-black h-10 w-full rounded-md text-sm cursor-pointer font-semibold active:scale-95 transition-all duration-75 ease-in"
 							>
-								Register
+								{authLoading ? "Loading..." : "Register"}
 							</button>
 						</form>
 					</div>

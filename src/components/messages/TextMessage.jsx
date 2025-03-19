@@ -1,6 +1,6 @@
 import React from "react";
 import { IoCheckmarkOutline, IoCheckmarkDoneOutline } from "react-icons/io5";
-import extractLinksFromTextMessage from "../../utils/extractLinksFromTextMessage";
+import extractLinksFromTextMessage from "../../utils/extractLinksFromTextMessage.util";
 
 function TextMessage({
 	type = "outgoing",
@@ -20,10 +20,9 @@ function TextMessage({
 				{author}
 			</p>
 			<p
-				className={`${type === "incoming" ? "rounded-tl-none rounded-md bg-borderColor text-heading" : "bg-highlight text-white rounded-md rounded-tr-none"} tracking-wide text-xs px-4 py-4`} dangerouslySetInnerHTML={{__html: modifiedMessage}}
-			>
-				
-			</p>
+				className={`${type === "incoming" ? "rounded-tl-none rounded-md bg-borderColor text-heading" : "bg-highlight text-white rounded-md rounded-tr-none"} tracking-wide text-xs px-4 py-4`}
+				dangerouslySetInnerHTML={{ __html: modifiedMessage }}
+			></p>
 			<p
 				className={`${type === "incoming" ? "" : "text-right justify-end"} text-xs flex flex-row items-center gap-2`}
 			>

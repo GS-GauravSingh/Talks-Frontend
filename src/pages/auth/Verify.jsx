@@ -2,10 +2,18 @@ import { User } from "@phosphor-icons/react";
 import React, { useEffect, useRef, useState } from "react";
 import { TbMessages } from "react-icons/tb";
 import { AuthImagePattern } from "../../components";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { resendOTP, verifyOTP } from "../../utils/auth.util";
 
 function Verify() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { authLoading } = useSelector((state) => state.auth);
+
 	const inpuRef = useRef([]);
 	const [otp, setOtp] = useState(new Array(4).fill(""));
+	const [combinedOTP, setCombinedOTP] = useState("");
 	const [timeLeft, setTimeLeft] = useState(2 * 60); // 2 * 60 = 120 seconds, 2 minutes (in seconds). Once generated, the OTP will expire in 2 minutes.
 	const [showResendButton, setShowResendButton] = useState(false);
 	let minutes = Math.floor(timeLeft / 60);
@@ -25,14 +33,6 @@ function Verify() {
 		return () => clearInterval(intervalId);
 	}, [timeLeft]);
 
-	function handleResendOTP(event) {
-		event.preventDefault();
-
-		// restart the time of 2 minutes.
-		setTimeLeft(2 * 60);
-		setShowResendButton(false);
-	}
-
 	function handleOnChange(event, index) {
 		const value = event.target.value;
 		if (isNaN(value)) {
@@ -51,7 +51,7 @@ function Verify() {
 		// Combined OTP
 		const combinedOTP = newOtp.join("");
 		if (combinedOTP.length === 4) {
-			console.log(combinedOTP);
+			setCombinedOTP(combinedOTP);
 		}
 	}
 
@@ -67,6 +67,41 @@ function Verify() {
 		) {
 			// move focus to prev input field.
 			inpuRef.current[index - 1].focus();
+		}
+	}
+
+	// Function to handle OTP Verification process.
+	async function handleSubmit(event) {
+		event.preventDefault();
+
+		// Take out the user email from the session storage.
+		const email = sessionStorage.getItem("userEmail");
+
+		try {
+			const response = await dispatch(
+				verifyOTP({ email, otp: combinedOTP })
+			);
+			if (response?.status === 201) {
+				navigate("/dashboard");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function handleResendOTP(event) {
+		event.preventDefault();
+
+		try {
+			// Take out the user email from the session storage.
+			const email = sessionStorage.getItem("userEmail");
+			await dispatch(resendOTP({ email }));
+
+			// restart the time of 2 minutes.
+			setTimeLeft(2 * 60);
+			setShowResendButton(false);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
@@ -111,7 +146,10 @@ function Verify() {
 						</div>
 
 						{/* OTP Verification Form */}
-						<form className="flex flex-col justify-center gap-4">
+						<form
+							onSubmit={handleSubmit}
+							className="flex flex-col justify-center gap-4"
+						>
 							<p className="text-heading text-sm text-center">
 								Enter the 4-digit OTP sent to your registered
 								email address.

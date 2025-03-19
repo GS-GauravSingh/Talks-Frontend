@@ -14,8 +14,15 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { TbMessages } from "react-icons/tb";
 import { AuthImagePattern } from "../../components";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../../utils/auth.util";
 
 function Signin() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const { authLoading } = useSelector((state) => state.auth);
+
 	// Creating Schema
 	// Zod is a schema based validation library.
 	// Instead of defining validation rules in multiple places (register for each input), you define a single validation schema using Zod.
@@ -49,8 +56,17 @@ function Signin() {
 		setShowPassword((prev) => !prev);
 	}
 
-	function onSubmit(data) {
-		console.log(data);
+	// Function to handle user login process.
+	async function onSubmit(data) {
+		try {
+			const response = await dispatch(loginUser(data));
+			if (response?.status === 200) {
+				navigate("/dashboard");
+				reset(); // reset the form fileds.
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	// Form validation Error - Displaying as Toast Errors.
@@ -84,7 +100,6 @@ function Signin() {
 
 			{/* Main Content */}
 			<div className="flex-grow grid grid-rows-1 grid-cols-1 lg:grid-cols-2">
-				
 				{/* Left Side */}
 				<div className="p-4 space-y-6 flex items-center justify-center">
 					<div className="w-full max-w-lg space-y-8">
