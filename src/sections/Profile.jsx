@@ -1,18 +1,19 @@
 import React from "react";
-import { RxCross1 } from "react-icons/rx";
-import { CiClock2 } from "react-icons/ci";
+import { X, Clock } from "lucide-react";
 
 function Profile({ toggleShowProfile }) {
 	return (
 		<div className="w-1/4 h-full flex flex-col gap-4 border-l border-borderColor">
 			{/* Header */}
 			<div className="flex flex-row items-center justify-between border-b border-borderColor px-4 py-[1.62rem]">
-				<h3 className="text-heading text-xl cursor-default">Profile</h3>
+				<h3 className="text-heading text-sm md:text-lg cursor-default">
+					Profile
+				</h3>
 				<span
 					className="hover:text-highlight text-xl cursor-pointer"
 					onClick={toggleShowProfile}
 				>
-					<RxCross1 />
+					<X className="size-6" />
 				</span>
 			</div>
 
@@ -25,21 +26,19 @@ function Profile({ toggleShowProfile }) {
 				/>
 			</div>
 
-            {/* Description and Other Content */}
-            <div className="flex flex-col px-4 gap-4">
+			{/* Description and Other Content */}
+			<div className="flex flex-col px-4 gap-4">
+				<div className="flex flex-col">
+					<h3 className="text-lg text-heading">Blake Jonathan</h3>
+					<p className="text-xs">Sales Manager</p>
+				</div>
 
-                <div className="flex flex-col">
-                    <h3 className="text-lg text-heading">Blake Jonathan</h3>
-                    <p className="text-xs">Sales Manager</p>
-                </div>
+				<p className="flex flex-row items-center gap-2">
+					<Clock className="size-4" />
 
-                <p className="flex flex-row items-center gap-2">
-                    <span>
-                        <CiClock2 />
-                    </span>
-                    <span className="text-xs">6:50 AM local time</span>
-                </p>
-            </div>
+					<span className="text-xs">6:50 AM local time</span>
+				</p>
+			</div>
 		</div>
 	);
 }

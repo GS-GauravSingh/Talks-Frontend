@@ -1,10 +1,9 @@
-import { User } from "@phosphor-icons/react";
 import React, { useEffect, useRef, useState } from "react";
-import { TbMessages } from "react-icons/tb";
 import { AuthImagePattern } from "../../components";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { resendOTP, verifyOTP } from "../../utils/auth.util";
+import { Loader, User } from "lucide-react";
 
 function Verify() {
 	const navigate = useNavigate();
@@ -106,125 +105,108 @@ function Verify() {
 	}
 
 	return (
-		<div className="min-h-screen flex flex-col">
-			{/* Header */}
-			<div className=" p-4 sticky top-0 z-50 backdrop-blur-md">
-				<div className="flex items-center gap-4">
-					<span className="text-4xl border p-2 rounded-md border-borderColor hover:text-black hover:bg-highlight hover:border-highlight transition-all duration-75 ease-in">
-						<TbMessages />
-					</span>
+		<div className="pt-12 min-h-screen grid grid-rows-1 grid-cols-1 lg:grid-cols-2">
+			{/* Left Side */}
+			<div className="p-4 space-y-6 flex items-center justify-center">
+				<div className="w-full max-w-lg space-y-8">
+					<div className="flex flex-col items-center">
 
-					<div className="flex flex-col">
-						<h3 className="text-heading font-semibold text-xl">
-							Talks
-						</h3>
-						<p className="text-xs whitespace-nowrap">
-							Real-time, Real Conversations.
+						<User className="text-heading size-8" />
+
+						<p className="text-heading text-xl font-semibold mt-2">
+							Verify Your Account
+						</p>
+						<p className="text-xs text-center">
+							<span className="">Your security, </span>
+							<span className="whitespace-nowrap">
+								our priority — verify now!
+							</span>
 						</p>
 					</div>
-				</div>
-			</div>
 
-			{/* Main Container */}
-			<div className="flex-grow grid grid-rows-1 grid-cols-1 lg:grid-cols-2">
-				{/* Left Side */}
-				<div className="p-4 space-y-6 flex items-center justify-center">
-					<div className="w-full max-w-lg space-y-8">
-						<div className="flex flex-col items-center">
-							<h3 className="text-heading text-2xl">
-								<User size={40} weight="bold" />
-							</h3>
-							<p className="text-heading text-xl font-semibold mt-4">
-								Verify Your Account
-							</p>
-							<p className="text-xs text-center">
-								<span className="">Your security, </span>
-								<span className="whitespace-nowrap">
-									our priority — verify now!
-								</span>
-							</p>
+					{/* OTP Verification Form */}
+					<form
+						onSubmit={handleSubmit}
+						className="flex flex-col justify-center gap-4"
+					>
+						<p className="text-heading text-sm text-center">
+							Enter the 4-digit OTP sent to your registered email
+							address.
+						</p>
+
+						{/* OTP Input Fields */}
+						<div className="grid grid-cols-4 grid-row-1 gap-4">
+							{otp.map((value, index) => {
+								return (
+									<input
+										ref={
+											// we can fire a callback inside a `ref` attribute, this is called as `callback ref`.
+											(inputElement) => {
+												inpuRef.current[index] =
+													inputElement;
+											}
+										}
+										type="text"
+										value={value}
+										key={index}
+										required
+										className="h-10 border border-borderColor rounded-md bg-borderColor text-heading text-xs text-center outline-none"
+										disabled={authLoading}
+										onChange={(event) =>
+											handleOnChange(event, index)
+										}
+										onClick={() => handleOnClick(index)}
+										onKeyDown={(event) =>
+											handleOnKeyDown(event, index)
+										}
+									/>
+								);
+							})}
 						</div>
 
-						{/* OTP Verification Form */}
-						<form
-							onSubmit={handleSubmit}
-							className="flex flex-col justify-center gap-4"
-						>
-							<p className="text-heading text-sm text-center">
-								Enter the 4-digit OTP sent to your registered
-								email address.
-							</p>
-
-							{/* OTP Input Fields */}
-							<div className="grid grid-cols-4 grid-row-1 gap-4">
-								{otp.map((value, index) => {
-									return (
-										<input
-											ref={
-												// we can fire a callback inside a `ref` attribute, this is called as `callback ref`.
-												(inputElement) => {
-													inpuRef.current[index] =
-														inputElement;
-												}
-											}
-											type="text"
-											value={value}
-											key={index}
-											required
-											className="h-10 border border-borderColor rounded-md bg-borderColor text-heading text-xs text-center outline-none"
-											onChange={(event) =>
-												handleOnChange(event, index)
-											}
-											onClick={() => handleOnClick(index)}
-											onKeyDown={(event) =>
-												handleOnKeyDown(event, index)
-											}
-										/>
-									);
-								})}
-							</div>
-
-							{/* Resend OTP */}
-							<p className="text-xs text-center flex flex-col gap-2">
-								{showResendButton ? (
-									<button
-										className="text-highlight cursor-pointer"
-										onClick={handleResendOTP}
-									>
-										Resend OTP ?
-									</button>
-								) : (
-									<span className="">
-										Verification code expires in:{" "}
-										<span className="text-highlight">
-											{minutes}:{seconds < 10 ? "0" : ""}
-											{seconds}.
-										</span>
+						{/* Resend OTP */}
+						<p className="text-xs text-center flex flex-col gap-2">
+							{showResendButton ? (
+								<button
+									className="text-highlight cursor-pointer"
+									onClick={handleResendOTP}
+									disabled={authLoading}
+								>
+									Resend OTP ?
+								</button>
+							) : (
+								<span className="">
+									Verification code expires in:{" "}
+									<span className="text-highlight">
+										{minutes}:{seconds < 10 ? "0" : ""}
+										{seconds}.
 									</span>
-								)}
-								<span className="text-red-500">
-									Do not share the verification code with
-									anyone.
 								</span>
-							</p>
+							)}
+							<span className="text-red-500">
+								Do not share the verification code with anyone.
+							</span>
+						</p>
 
-							{/* Submit Button */}
-							<button
-								type="submit"
-								className="bg-highlight text-black h-10 w-full rounded-md text-sm cursor-pointer font-semibold active:scale-95 transition-all duration-75 ease-in"
-							>
-								Verify
-							</button>
-						</form>
-					</div>
+						{/* Submit Button */}
+						<button
+							type="submit"
+							className="bg-highlight text-black h-10 w-full rounded-md text-sm cursor-pointer font-semibold active:scale-95 transition-all duration-75 ease-in flex items-center justify-center"
+							disabled={authLoading}
+						>
+							{
+								authLoading ? <Loader className="size-6 animate-spin" /> : "Verify"
+							}
+						</button>
+					</form>
 				</div>
-
-				{/* Right Side */}
-				<AuthImagePattern
-					title="Verify Your Account"
-					subtitle="One step away! Enter the OTP to secure your account and proceed."
-				/>
 			</div>
+
+			{/* Right Side */}
+			<AuthImagePattern
+				title="Verify Your Account"
+				subtitle="One step away! Enter the OTP to secure your account and proceed."
+			/>
 		</div>
 	);
 }

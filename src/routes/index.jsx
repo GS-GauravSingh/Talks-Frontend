@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router";
 import { Dashboard, Signin, Signup, Verify } from "../pages";
-import { ChatList, Messages, UpdateProfile } from "../sections";
+import { ChatList, Messages, Navbar, UpdateProfile } from "../sections";
 import { useDispatch, useSelector } from "react-redux";
 import { getMe } from "../utils/user.util";
+import FadeLoader from "react-spinners/FadeLoader";
+import { Profile } from "../pages";
 
 function index() {
-	const { authUser, isAuthenticated } = useSelector((state) => state.auth);
+	const { onlineUsers, socket } = useSelector((state) => state.socket);
+	const { authUser, isAuthenticated, authLoading } = useSelector(
+		(state) => state.auth
+	);
+
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -39,32 +46,82 @@ function index() {
 		checkAuthStatus();
 	}, [isAuthenticated]);
 
+	if (authLoading && !authUser) {
+		return (
+			<div className="h-screen bg-background flex items-center justify-center">
+				<FadeLoader color="gray" loading={authLoading} />
+			</div>
+		);
+	}
 	return (
-		<Routes>
-			{/* Home/Root Route */}
-			<Route index element={<Navigate to="/dashboard" />} />
+		<div>
+			<Navbar />
 
-			{/* Dashboard */}
-			<Route path="/dashboard" element={<Dashboard />}>
+			<Routes>
+				{/* Home/Root Route */}
+				<Route index element={<Navigate to="/dashboard" />} />
+
+				{/* Dashboard */}
 				<Route
-					path=""
+					path="/dashboard"
 					element={
-						<>
-							<ChatList />
-							<Messages />
-						</>
+						isAuthenticated ? (
+							<Dashboard />
+						) : (
+							<Navigate to="/auth/signin" />
+						)
+					}
+				>
+					<Route
+						path=""
+						element={
+							<>
+								<ChatList />
+								<Messages />
+							</>
+						}
+					/>
+
+					<Route path="update-profile" element={<UpdateProfile />} />
+					<Route path="change-password" element={<UpdateProfile />} />
+				</Route>
+
+				{/* Authentication Routes */}
+				<Route
+					path="/auth/signup"
+					element={
+						isAuthenticated ? (
+							<Navigate to="/dashboard" />
+						) : (
+							<Signup />
+						)
+					}
+				/>
+				<Route
+					path="/auth/verify"
+					element={
+						isAuthenticated ? (
+							<Navigate to="/dashboard" />
+						) : (
+							<Verify />
+						)
+					}
+				/>
+				<Route
+					path="/auth/signin"
+					element={
+						isAuthenticated ? (
+							<Navigate to="/dashboard" />
+						) : (
+							<Signin />
+						)
 					}
 				/>
 
-				<Route path="update-profile" element={<UpdateProfile />} />
-				<Route path="change-password" element={<UpdateProfile />} />
-			</Route>
-
-			{/* Authentication Routes */}
-			<Route path="/auth/signup" element={<Signup />} />
-			<Route path="/auth/verify" element={<Verify />} />
-			<Route path="/auth/signin" element={<Signin />} />
-		</Routes>
+				{/* User Routes */}
+				<Route path="/user/profile" element={<Profile />} />
+			</Routes>
+		</div>
 	);
 }
 

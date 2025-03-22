@@ -2,7 +2,7 @@ import axios from "axios";
 
 //  `Axios.create()` is a handy feature within Axios used to create a new instance of Axios with a custom configuration.
 const axiosUserInstance = axios.create({
-	baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1/user`, // set backend base URL
+	baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/api/v1`, // set backend base URL
 	withCredentials: true, // Allows cookies to be sent with the API request (usefull for authentication process)
 	headers: {
 		"Content-Type": "application/json", // Default content type

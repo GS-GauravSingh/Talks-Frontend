@@ -1,7 +1,7 @@
-import { Smiley } from "@phosphor-icons/react";
 import EmojiPicker from "emoji-picker-react";
 import React, { useEffect, useRef, useState } from "react";
 import useTheme from "../hooks/useTheme";
+import { Smile } from "lucide-react";
 
 function Emojipicker() {
 	const [theme, setTheme] = useTheme();
@@ -38,7 +38,7 @@ function Emojipicker() {
 				onClick={toggleShowPicker}
 				ref={triggerRef}
 			>
-				<Smiley size={18} weight="bold" />
+				<Smile className="size-4" />
 			</span>
 
 			{showPicker && (

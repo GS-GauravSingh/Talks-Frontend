@@ -6,6 +6,11 @@ import {
 	setAuthUser,
 	setAuthUserLogout,
 } from "../redux/slices/authSlice";
+import {
+	connectSocketServer,
+	disconnectSocketServer,
+	getOnlineUsers,
+} from "./socket.util";
 
 // By default, Redux does not allow asynchronous tasks inside action creators, as they must return plain JavaScript objects. However, with the help of Redux Thunk middleware, action creators can return a function instead of an object. This function receives dispatch and getState as arguments, enabling the execution of asynchronous tasks like API calls before updating the Redux store.
 
@@ -71,7 +76,7 @@ export function verifyOTP(jsonData) {
 			dispatch(setAuthError(null));
 			dispatch(setAuthLoading(true));
 
-			// API Call           
+			// API Call
 			const response = await axiosAuthInstance.post(
 				"/verify-otp",
 				jsonData
@@ -86,6 +91,12 @@ export function verifyOTP(jsonData) {
 			toast.success(response.data.message, {
 				id: toastId,
 			});
+
+			// connect to the socket server when user conmpletes its registation process.
+			dispatch(connectSocketServer());
+
+			// get the online users
+			dispatch(getOnlineUsers());
 
 			return response;
 		} catch (error) {
@@ -180,6 +191,12 @@ export function loginUser(jsonData) {
 				id: toastId,
 			});
 
+			// connect to the socket server when user log in to their account.
+			dispatch(connectSocketServer());
+
+			// get the online users
+			dispatch(getOnlineUsers());
+
 			return response;
 		} catch (error) {
 			// console.log("ERROR: auth.util.js: loginUser(): ", error);
@@ -218,12 +235,15 @@ export function logoutUser() {
 			// API Call
 			const response = await axiosAuthInstance.post("/logout");
 			// console.log("auth.util.js: logoutUser(): ", response);
-			dispatch(setAuthError());
+			dispatch(setAuthUserLogout());
 
 			// Update the loading toast to success.
 			toast.success(response.data.message, {
 				id: toastId,
 			});
+
+			// disconnect to the socket server when log out.
+			dispatch(disconnectSocketServer());
 
 			return response;
 		} catch (error) {

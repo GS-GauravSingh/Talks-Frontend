@@ -1,89 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { LuMessageSquare } from "react-icons/lu";
-import { TbMessages } from "react-icons/tb";
-import { IoIosLogOut } from "react-icons/io";
-import { FaRegUserCircle } from "react-icons/fa";
-import { NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import { ThemeSwitcher } from "../components";
+import { MessagesSquare, Settings, User, LogOut, MessageSquare } from "lucide-react";
+import { logoutUser } from "../utils/auth.util";
+import { useDispatch, useSelector } from "react-redux";
 
 function Navbar() {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const { isAuthenticated } = useSelector((state) => state.auth);
+
 	const menu = [
 		{
 			title: "DMs",
-			icon: <LuMessageSquare />,
+			icon: <MessagesSquare className="size-5" />,
 			path: "/dashboard",
 		},
 		{
 			title: "Profile",
-			icon: <FaRegUserCircle />,
-			path: "/dashboard/update-profile",
+			icon: <User className="size-5" />,
+			path: "/user/profile",
+		},
+		{
+			title: "Logout",
+			icon: <LogOut className="size-5" />,
+			path: "",
 		},
 	];
 
-	// Initializing the active navigation menu on component mount.
-	const [active, setActive] = useState(() => {
-		let activeIdx;
-		for (let index = 0; index < menu.length; index++) {
-			const element = menu[index];
+	async function handleLogout(index) {
+		if (index !== menu.length - 1) return;
 
-			if (element.path === window.location.pathname) {
-				activeIdx = index;
-				break;
-			}
+		try {
+			await dispatch(logoutUser());
+			navigate("/auth/signin");
+		} catch (error) {
+			console.log(error);
 		}
-
-		return activeIdx;
-	});
+	}
 
 	return (
-		<div className="h-full w-[4.5rem] min-w-[4.5rem] flex flex-col items-center gap-4 px-2 py-2">
-			<div className="border-b border-borderColor py-[1.05rem] w-full flex justify-center">
-				<div className="border rounded-md px-2 py-2 text-xl cursor-default text-highlight hover:bg-highlight transition-all duration-75 ease-in group">
-					<TbMessages className="group-hover:text-white transition-all duration-75 ease-in" />
-				</div>
-			</div>
+		<header className="w-full border border-borderColor fixed top-0 z-50 backdrop-blur-lg">
+			<div className="mx-auto h-12">
+				<div className="flex items-center justify-between px-2 sm:px-6  h-full">
+					{/* Left Side - Contains Logo */}
+					<Link to="/dashboard" className="flex items-center gap-2.5">
+						<div className="size-7 rounded-md flex items-center justify-center border border-highlight bg-highlight">
+							<MessagesSquare className="size-4 text-black" />
+						</div>
 
-			{/* Navigation Menu */}
-			<div className="flex-grow flex flex-col items-center gap-4">
-				{menu.map(({ title, icon, path }, index) => {
-					return (
-						<NavLink
-							key={index}
-							to={path}
-							className="text-center space-y-1 cursor-pointer"
-							onClick={() => setActive(index)}
-						>
-							<div
-								className={`${active === index ? "bg-highlight border-highlight" : ""} flex justify-center border border-borderColor rounded-md px-2 py-2 text-base`}
-							>
-								<div
-									className={`${active === index ? "text-white" : ""} `}
-								>
-									{icon}
-								</div>
-							</div>
-							<p
-								className={`${active === index ? "text-highlight font-semibold" : ""} text-xs`}
-							>
-								{title}
+						<div className="flex flex-col text-xs">
+							<h3 className="text-heading font-semibold">
+								Talks
+							</h3>
+							<p className="text-xs whitespace-nowrap hidden sm:block">
+								Real-time, Real Conversations.
 							</p>
-						</NavLink>
-					);
-				})}
-			</div>
+						</div>
+					</Link>
 
-			{/* Logout Button and Theme Switcher */}
-			<div className="border-t border-borderColor pt-4 w-full">
-				<div className="flex flex-col items-center gap-4">
-					<ThemeSwitcher />
+					{/* Right Side - Navigation Menu */}
+					<div className="flex flex-row gap-4">
+						<div className="flex flex-row items-center gap-4">
+							{menu.map((obj, index) => {
+								return (
+									<Link
+										to={obj.path}
+										key={index}
+										className={`btn btn-sm flex flex-row items-center gap-2 text-xs group ${!isAuthenticated ? "hidden" : ""}`}
+										onClick={() => handleLogout(index)}
+									>
+										<span
+											className={`${index === menu.length - 1 ? "group-hover:text-red-700" : "group-hover:text-highlight"}`}
+										>
+											{obj.icon}
+										</span>
+										<span
+											className={`${index === menu.length - 1 ? "group-hover:text-red-700" : "group-hover:text-highlight"} font-bold hidden sm:inline`}
+										>
+											{obj.title}
+										</span>
+									</Link>
+								);
+							})}
+						</div>
 
-					{/* Logout Button */}
-					<button className="w-full flex justify-center border rounded-md px-2 py-1 text-xl text-red-500 hover:bg-red-500  hover:cursor-pointer transition-all duration-75 ease-in group">
-						<IoIosLogOut className="group-hover:text-white transition-all duration-75 ease-in" />
-					</button>
+						{/* Theme Switcher Component */}
+						<ThemeSwitcher />
+					</div>
 				</div>
 			</div>
-		</div>
+		</header>
 	);
 }
 
