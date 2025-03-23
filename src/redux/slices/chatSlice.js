@@ -11,6 +11,8 @@ const initialState = {
 	contactsError: null,
 	messageLoading: false,
 	messageError: null,
+	profileLoading: false,
+	profileError: null,
 };
 
 // Creating Slice - `createSlice()` function is used to create slice and it also accepts arguments.
@@ -53,6 +55,14 @@ const chatSlice = createSlice({
 			state.messageError = action.payload;
 		},
 
+		setProfileLoading: function (state, action) {
+			state.profileLoading = action.payload;
+		},
+
+		setProfileError: function (state, action) {
+			state.profileError = action.payload;
+		},
+
 		setConversations: function (state, action) {
 			state.conversations = action.payload;
 		},
@@ -82,6 +92,8 @@ export const {
 	setMessageLoading,
 	setMessageError,
 	setConversationsMessages,
+	setProfileError,
+	setProfileLoading,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

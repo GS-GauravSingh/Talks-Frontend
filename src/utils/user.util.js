@@ -17,8 +17,10 @@ import {
 	setConversationsMessages,
 	setMessageError,
 	setMessageLoading,
+	setProfileError,
+	setProfileLoading,
 } from "../redux/slices/chatSlice";
-import { connectSocketServer, getOnlineUsers } from "./socket.util";
+import { connectSocketServer, disconnectSocketServer, getOnlineUsers } from "./socket.util";
 
 // By default, Redux does not allow asynchronous tasks inside action creators, as they must return plain JavaScript objects. However, with the help of Redux Thunk middleware, action creators can return a function instead of an object. This function receives dispatch and getState as arguments, enabling the execution of asynchronous tasks like API calls before updating the Redux store.
 
@@ -178,6 +180,194 @@ export function sendMessage({
 			);
 		} finally {
 			dispatch(setMessageLoading(false));
+		}
+	};
+}
+
+// Update Avatar
+export function updateAvatar(avatar) {
+	return async (dispatch, getState) => {
+		// dispatch: function used to update the redux store data.
+		// getState: function used to get the current state/snapshot of the redux store. Syntax: `getState().sliceName.property`
+
+		// Display a loading toast.
+		// Each toast call returns a unique id.
+		const toastId = toast.loading("Updating Avatar...");
+		try {
+			dispatch(setProfileError(null));
+			dispatch(setProfileLoading(true));
+
+			// API Call
+			const response = await axiosUserInstance.patch("/user/avatar", {
+				avatar,
+			});
+			console.log("user.util.js: updateAvatar(): ", response);
+
+			dispatch(setAuthUser(response.data.user));
+
+			// Update the loading toast to success.
+			toast.success(response.data.message, {
+				id: toastId,
+			});
+
+			return response;
+		} catch (error) {
+			dispatch(setProfileError(error));
+			// console.log("ERROR: user.util.js: updateAvatar(): ", error);
+
+			// Update the loading toast to error.
+			toast.error(
+				error?.response?.data?.message ||
+					error?.message ||
+					"Something went wrong",
+				{
+					id: toastId,
+				}
+			);
+		} finally {
+			dispatch(setProfileLoading(false));
+		}
+	};
+}
+
+// Update User Profile Info.
+export function updateUserProfileInfo(formData) {
+	return async (dispatch, getState) => {
+		// dispatch: function used to update the redux store data.
+		// getState: function used to get the current state/snapshot of the redux store. Syntax: `getState().sliceName.property`
+
+		// Display a loading toast.
+		// Each toast call returns a unique id.
+		const toastId = toast.loading("Updating Profile...");
+		try {
+			dispatch(setProfileError(null));
+			dispatch(setProfileLoading(true));
+
+			// API Call
+			const response = await axiosUserInstance.patch(
+				"/user/me",
+				formData
+			);
+			console.log("user.util.js: updateUserProfileInfo(): ", response);
+
+			dispatch(setAuthUser(response.data.user));
+
+			// Update the loading toast to success.
+			toast.success(response.data.message, {
+				id: toastId,
+			});
+
+			return response;
+		} catch (error) {
+			dispatch(setProfileError(error));
+			// console.log("ERROR: user.util.js: updateUserProfileInfo(): ", error);
+
+			// Update the loading toast to error.
+			toast.error(
+				error?.response?.data?.message ||
+					error?.message ||
+					"Something went wrong",
+				{
+					id: toastId,
+				}
+			);
+		} finally {
+			dispatch(setProfileLoading(false));
+		}
+	};
+}
+
+// Update User Profile Password
+export function updateUserProfilePassword(formData) {
+	return async (dispatch, getState) => {
+		// dispatch: function used to update the redux store data.
+		// getState: function used to get the current state/snapshot of the redux store. Syntax: `getState().sliceName.property`
+
+		// Display a loading toast.
+		// Each toast call returns a unique id.
+		const toastId = toast.loading("Updating Password...");
+		try {
+			dispatch(setProfileError(null));
+			dispatch(setProfileLoading(true));
+
+			// API Call
+			const response = await axiosUserInstance.patch(
+				"/user/password",
+				formData
+			);
+			console.log(
+				"user.util.js: updateUserProfilePassword(): ",
+				response
+			);
+
+			// Update the loading toast to success.
+			toast.success(response.data.message, {
+				id: toastId,
+			});
+
+			return response;
+		} catch (error) {
+			dispatch(setProfileError(error));
+			// console.log("ERROR: user.util.js: updateUserProfilePassword(): ", error);
+
+			// Update the loading toast to error.
+			toast.error(
+				error?.response?.data?.message ||
+					error?.message ||
+					"Something went wrong",
+				{
+					id: toastId,
+				}
+			);
+		} finally {
+			dispatch(setProfileLoading(false));
+		}
+	};
+}
+
+// Delete User Account
+export function deleteUserAccount() {
+	return async (dispatch, getState) => {
+		// dispatch: function used to update the redux store data.
+		// getState: function used to get the current state/snapshot of the redux store. Syntax: `getState().sliceName.property`
+
+		// Display a loading toast.
+		// Each toast call returns a unique id.
+		const toastId = toast.loading("Deleting...");
+		try {
+			dispatch(setProfileError(null));
+			dispatch(setProfileLoading(true));
+
+			// API Call
+			const response = await axiosUserInstance.delete("/user/me");
+			console.log(
+				"user.util.js: deleteUserAccount(): ",
+				response
+			);
+
+			dispatch(setAuthUserLogout());
+
+			// Update the loading toast to success.
+			toast.success(response.data.message, {
+				id: toastId,
+			});
+
+			return response;
+		} catch (error) {
+			dispatch(setProfileError(error));
+			// console.log("ERROR: user.util.js: deleteUserAccount(): ", error);
+
+			// Update the loading toast to error.
+			toast.error(
+				error?.response?.data?.message ||
+					error?.message ||
+					"Something went wrong",
+				{
+					id: toastId,
+				}
+			);
+		} finally {
+			dispatch(setProfileLoading(false));
 		}
 	};
 }

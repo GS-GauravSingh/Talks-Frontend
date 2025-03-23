@@ -10,7 +10,6 @@ import { setConversationsMessages } from "../redux/slices/chatSlice";
 export function connectSocketServer() {
 	return (dispatch, getState) => {
 		const { isAuthenticated } = getState().auth;
-		console.log(isAuthenticated);
 
 		if (!isAuthenticated || getState().socket.socketInstance?.connected) {
 			return;
@@ -21,7 +20,6 @@ export function connectSocketServer() {
 				withCredentials: true /* allow cookies to be sent along with the websocket requests */,
 				autoConnect: false /* we connect manually after authentication */,
 			});
-			console.log(socket);
 
 			// update the redux store - store this `socket` instance in the socket slice.
 			dispatch(setSocketInstance(socket));
@@ -48,7 +46,6 @@ export function disconnectSocketServer() {
 export function getOnlineUsers() {
 	return (dispatch, getState) => {
 		const socket = getState().socket?.socketInstance;
-		console.log(socket);
 
 		if (socket) {
 			// Listen for the response from the server
@@ -65,17 +62,17 @@ export function getOnlineUsers() {
 export function subscribeToMessages() {
 	return (dispatch, getState) => {
 		const { selectedConversation } = getState().chat;
-        
-		if (!selectedConversation) {
-            return;
-		}
-        
-		const socket = getState().socket.socketInstance;
-		socket.on("newMessage", (newMessage) => {
 
-			const isMessageSentFromSelectedUser = newMessage.author === selectedConversation._id;
-			if(!isMessageSentFromSelectedUser)
-			{
+		if (!selectedConversation) {
+			return;
+		}
+
+		const socket = getState().socket.socketInstance;
+
+		socket.on("newMessage", (newMessage) => {
+			const isMessageSentFromSelectedUser =
+				newMessage.author === selectedConversation._id;
+			if (!isMessageSentFromSelectedUser) {
 				return;
 			}
 

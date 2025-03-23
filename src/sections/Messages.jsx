@@ -2,7 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import user from "../assets/userImages/user_03.png";
 import { FaPaperPlane } from "react-icons/fa";
 import { Gif, Smiley } from "@phosphor-icons/react";
-import { Emojipicker, GifPicker, TextMessage } from "../components";
+import {
+	Emojipicker,
+	GifPicker,
+	TextMessage,
+	TypingIndicator,
+} from "../components";
 import Profile from "./Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { Image, Loader, X } from "lucide-react";
@@ -18,6 +23,8 @@ function Messages() {
 	const { selectedConversation, conversationsLoading, conversations } =
 		useSelector((state) => state.chat);
 
+	const { socketInstance } = useSelector((state) => state.socket);
+
 	const { authUser } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
@@ -28,12 +35,25 @@ function Messages() {
 	const [showImagePreview, setShowImagePreview] = useState(false);
 	const [showUserProfile, setShowUserProfile] = useState(false);
 	const [showGifPicker, setShowGifPicker] = useState(false);
+	const [showTypingIndicator, setShowTypingIndicator] = useState(false);
 	const gifTriggerRef = useRef(null);
 
 	useEffect(() => {
 		// Scroll to the last message when messages update
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [conversations?.messages]); // Runs when `messages` change
+
+	useEffect(() => {
+		socketInstance.on("startedTyping", (data) => {
+			if (selectedConversation?.id === data.userId) {
+				setShowTypingIndicator(true);
+
+				setTimeout(() => {
+					setShowTypingIndicator(false);
+				}, 2000);
+			}
+		});
+	}, [selectedConversation]);
 
 	function toggleShowProfile() {
 		setShowUserProfile((prev) => !prev);
@@ -125,16 +145,24 @@ function Messages() {
 						/>
 						<div className="flex flex-row gap-4 items-center">
 							<img
-								src={user}
+								src={
+									selectedConversation?.avatar
+										? selectedConversation?.avatar
+										: defaultUserAvatar
+								}
 								alt="User's Profile Image"
 								className={`object-center object-contain size-10 md:size-14 cursor-pointer`}
 								onClick={toggleShowProfile}
 							/>
 							<div>
 								<h3 className="text-heading text-sm md:text-lg">
-									Robert Jhon
+									{`${selectedConversation?.firstname} ${selectedConversation?.lastname}`}
 								</h3>
-								<p className="text-xs">Reply to message(s)</p>
+								<p
+									className={`text-xs ${selectedConversation?.status === "Online" && "text-green-400"}`}
+								>
+									{selectedConversation?.status}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -158,6 +186,14 @@ function Messages() {
 					})}
 
 					<div className="invisible" ref={messagesEndRef}></div>
+
+					{/* Typing Indicator */}
+					{showTypingIndicator && (
+						<TypingIndicator
+							author={findAuthor(message.author)}
+							avatar={`${message.author === authUser._id ? authUser.avatar || defaultUserAvatar : selectedConversation.avatar || defaultUserAvatar}`}
+						/>
+					)}
 				</div>
 
 				{/* Buttons */}
@@ -193,9 +229,14 @@ function Messages() {
 								className="w-full h-10 bg-borderColor rounded-md outline-none border border-highlight pl-4 pr-24 text-xs tracking-wide text-heading"
 								placeholder="Type your message here..."
 								value={message}
-								onChange={(event) =>
-									setMessage(event.target.value)
-								}
+								onChange={(event) => {
+									setMessage(event.target.value);
+
+									// Emit start typing event
+									socketInstance.emit("startTyping", {
+										userId: selectedConversation?._id,
+									});
+								}}
 							/>
 
 							<div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-row items-center gap-4 h-full">

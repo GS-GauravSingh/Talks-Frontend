@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Check, Loader, Plus, Users } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getContacts, startConversation } from "../utils/user.util";
@@ -147,7 +147,9 @@ export default function ChatList() {
 				})}
 				{/* In case of 0 online users */}
 				{filteredContacts.length === 0 && (
-					<div className="text-center h-full flex items-center justify-center">No online user</div>
+					<div className="text-center h-full flex items-center justify-center">
+						No online user
+					</div>
 				)}
 			</div>
 		</div>

@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router";
 import { ThemeSwitcher } from "../components";
-import { MessagesSquare, Settings, User, LogOut, MessageSquare } from "lucide-react";
+import {
+	MessagesSquare,
+	Settings,
+	User,
+	LogOut,
+	MessageSquare,
+} from "lucide-react";
 import { logoutUser } from "../utils/auth.util";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -33,7 +39,6 @@ function Navbar() {
 
 		try {
 			await dispatch(logoutUser());
-			navigate("/auth/signin");
 		} catch (error) {
 			console.log(error);
 		}

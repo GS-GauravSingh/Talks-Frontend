@@ -1,9 +1,8 @@
 import { CaretDown, Globe } from "@phosphor-icons/react";
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
-function CountrySelect() {
-	const [selected, setSelected] = useState("");
-	function changeTextColor() {}
+function CountrySelect({ formData, setFormData }) {
 	return (
 		<div className="flex flex-col w-full gap-1">
 			<label htmlFor="countrySelect" className="text-heading text-sm">
@@ -11,13 +10,18 @@ function CountrySelect() {
 			</label>
 			<div className="relative w-full cursor-pointer">
 				<select
-					value={selected}
+					value={formData?.country}
+					name="country"
 					onChange={(event) => {
-						setSelected(event.target.value);
-						changeTextColor();
+						setFormData((prev) => {
+							return {
+								...prev,
+								[event.target.name]: event.target.value,
+							};
+						});
 					}}
 					id="countrySelect"
-					className={`flex items-center border border-borderColor w-full  h-10 rounded-md outline-none appearance-none pl-12  text-[0.8rem] bg-borderColor ${selected ? "text-heading" : ""}`}
+					className={`flex items-center border border-borderColor w-full  h-10 rounded-md outline-none appearance-none pl-12  text-[0.8rem] bg-borderColor ${formData?.country ? "text-heading" : ""}`}
 				>
 					<option
 						value=""
